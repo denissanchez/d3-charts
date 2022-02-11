@@ -41,24 +41,54 @@ async function drawScatter() {
     .range([dimensions.boundedHeight, 0])
     .nice();
 
-  function drawDots(dataset, color) {
+  function drawDots(dataset) {
     const dots = bounds.selectAll("circle")
       .data(dataset)
 
-    dots.enter().append("circle")
+    const colorAccessor = dp => dp.cloudCover;
 
-    bounds.selectAll("circle")
-        .attr("cx", dataPoint => xScale(xAccessor(dataPoint)))
-        .attr("cy", dataPoint => yScale(yAccessor(dataPoint)))
-        .attr("r", 3)
-        .attr("fill", color);
+    const colorScale = d3.scaleLinear()
+      .domain(d3.extent(dataset, colorAccessor))
+      .range(["skyblue", "darkslategrey"]);
+
+    dots.join("circle")
+      .attr("cx", dataPoint => xScale(xAccessor(dataPoint)))
+      .attr("cy", dataPoint => yScale(yAccessor(dataPoint)))
+      .attr("r", 3)
+      .attr("fill", dataPoint => colorScale(colorAccessor(dataPoint)));
   }
 
-  drawDots(dataset.slice(0, 200), "cornflowerblue");
+  drawDots(dataset);
 
-  setTimeout(() => {
-    drawDots(dataset, "darkred");
-  }, 3000)
+  const xAxisGenerator = d3.axisBottom()
+    .scale(xScale);
+  
+  const xAxis = bounds.append('g')
+    .call(xAxisGenerator)
+      .style("transform", `translateY(${dimensions.boundedHeight}px)`);
+
+  const xAxisLabel = xAxis.append("text")
+    .attr("x", dimensions.boundedWidth / 2)
+    .attr("y", dimensions.margin.bottom - 10)
+    .attr("fill", "black")
+    .style("font-size", "1.4em")
+    .html("Dew point (&deg;F)")
+
+  const yAxisGenerator = d3.axisLeft()
+    .scale(yScale)
+    .ticks(4);
+
+  const yAxis = bounds.append("g")
+    .call(yAxisGenerator);
+
+  const yAxisLabel = yAxis.append("text")
+    .attr("x", -dimensions.boundedHeight / 2)
+    .attr("y", -dimensions.margin.left + 10)
+    .attr("fill", "black")
+    .style("font-size", "1.4em")
+    .text("Relative humidity")
+    .style("transform", "rotate(-90deg)")
+    .style("text-anchor", "middle")
 }
 
 
