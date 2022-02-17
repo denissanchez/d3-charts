@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Bars</title>
-    </head>
-    <body>
-        <div id="wrapper"></div>
 
-        <script src="https://d3js.org/d3.v7.min.js"></script>
-        <script src="./draw-bars.js"></script>
-    </body>
+<head>
+    <title>Bars</title>
+</head>
+
+<body>
+    <div id="wrapper"></div>
+
+    <svg width="120" height="120">
+        <rect x="10" y="10" width="100" height="100" fill="cornflowerblue">
+            <animate attributeName="x" values="0;20;0" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="cornflowerBlue;maroon;cornflowerBlue" dur="6s"
+                repeatCount="indefinite" />
+        </rect>
+    </svg>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="./draw-bars.js"></script>
+</body>
+
 </html>
